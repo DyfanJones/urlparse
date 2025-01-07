@@ -1,0 +1,163 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# urlparse
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+Fast and simple url parser for R. Initially developed for the `paws.common` package.
+`urlparse` is influenced by python's `from urllib.parse import urlparse` and doesn't split out username or password from the host.
+
+```{python}
+from urllib.parse import urlparse
+urlparse("https://user:pass@host.com:8000/path?query=1#fragment")
+```
+
+```{r}
+urlparse::url_parse("https://user:pass@host.com:8000/path?query=1#fragment")
+```
+
+This allows `urlparse` to handle fairly complex url's without sacrificing any performance.
+
+## Installation
+
+You can install the development version of urlparse like so:
+
+``` r
+remotes::install_github("dyfanjones/urlparse")
+```
+
+r-universe installation:
+
+```r
+install.packages("urlparse", repos = c("https://dyfanjones.r-universe.dev", "https://cloud.r-project.org"))
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+```{r example}
+library(urlparse)
+```
+
+```{r encode}
+url_encoder("foo = bar + 5")
+
+url_decoder(url_encoder("foo = bar + 5"))
+```
+
+Similar to python's `from urllib.parse import quote`, `urlparse::url_encoder` supports the `safe` parameter. The additional ASCII characters that should not be encoded.
+
+
+```{python python_encode_safe}
+from urllib.parse import quote
+quote("foo = bar + 5", safe = "+")
+```
+```{r r_encode_safe}
+url_encoder("foo = bar + 5", safe = "+")
+```
+
+```{r url_modify}
+
+url <- "http://example.com"
+set_scheme(url, "https") |>
+  set_port(1234L) |>
+  set_path("foo/bar") |>
+  set_query("baz") |>
+  set_fragment("quux")
+
+url_modify(url, scheme = "https", port = 1234, path = "foo/bar", query = "baz", fragment = "quux")
+```
+
+
+Note: it is faster to use `url_modify` rather than then piping the `set_*` functions.  This is because `urlparse` has to parse the url within each `set_*` to modify the url.
+
+```{r url_mod_bench}
+url <- "http://example.com"
+bench::mark(
+  piping = {set_scheme(url, "https") |>
+  set_port(1234L) |>
+  set_path("foo/bar") |>
+  set_query("baz") |>
+  set_fragment("quux")},
+  single_function = url_modify(url, scheme = "https", port = 1234, path = "foo/bar", query = "baz", fragment = "quux")
+)
+```
+
+
+## Benchmark:
+
+```{r, echo = FALSE}
+show_relative <- function(bm) {
+  summary_cols <- c("min", "median", "itr/sec", "mem_alloc", "gc/sec")
+  bm[summary_cols] <- lapply(bm[summary_cols], function(x) as.numeric(x / min(x)))
+  return(bm)
+}
+```
+
+### Parsing URL:
+```{r benchmark}
+url <- "https://user:pass@host.com:8000/path?query=1#fragment"
+(bm <- bench::mark(
+  urlparse = urlparse::url_parse(url),
+  httr2 = httr2::url_parse(url),
+  curl = curl::curl_parse_url(url),
+  urltools = urltools::url_parse(url),
+  check = F
+))
+
+show_relative(bm)
+
+ggplot2::autoplot(bm)
+```
+
+### Encoding URL:
+
+Note: `urltools` encode special characters to lower case hex i.e.: "?" -> "%3f" instead of "%3F"
+
+```{r benchmark_encode_small}
+string <- "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~`!@#$%^&*()=+[{]}\\|;:'\",<>/? "
+(bm <- bench::mark(
+  urlparse = urlparse::url_encoder(string),
+  curl = curl::curl_escape(string),
+  urltools = urltools::url_encode(string),
+  base = URLencode(string, reserved = T),
+  check = F
+))
+
+show_relative(bm)
+
+ggplot2::autoplot(bm)
+```
+
+```{r benchmark_encode_large}
+string <- "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~`!@#$%^&*()=+[{]}\\|;:'\",<>/? "
+url <- paste0(sample(strsplit(string, "")[[1]], 1e4, replace = TRUE), collapse = "")
+(bm <- bench::mark(
+  urlparse = urlparse::url_encoder(url),
+  curl = curl::curl_escape(url),
+  urltools = urltools::url_encode(url),
+  base = URLencode(url, reserved = T, repeated = T),
+  check = F,
+  filter_gc = F
+))
+
+show_relative(bm)
+
+ggplot2::autoplot(bm)
+```
+
