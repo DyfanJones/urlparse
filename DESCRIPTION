@@ -8,6 +8,9 @@ Description: A fast and simple URL parser package for R. This package provides
     functions to parse URLs into their components, such as scheme, user, password, host, port,
     path, query, and fragment.
 License: MIT + file LICENSE
+URL: https://github.com/dyfanjones/urlparse,
+    https://dyfanjones.r-universe.dev/urlparse
+BugReports: https://github.com/dyfanjones/urlparse/issues
 Encoding: UTF-8
 LinkingTo:
     Rcpp
