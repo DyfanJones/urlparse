@@ -7,3 +7,7 @@ src/*.so
 src/*.dll
 *.DS_Store
 *.vscode
+.Rdata
+.httr-oauth
+.DS_Store
+.quarto
