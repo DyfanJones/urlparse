@@ -202,7 +202,7 @@ public:
     std::string host_port = std::string(it, host_end);
 
     // Use rfind to locate the last occurrence of ':' in host_port
-    // Use find to locate the last occurrence of '@' in host
+    // Use find to locate '@' in host_port
     auto colon_pos = host_port.rfind(':');
     auto at_pos = host_port.find('@');
 
