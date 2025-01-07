@@ -18,6 +18,8 @@ test_that("test build complex url", {
   expected <- "https://www.google.com/maps/place/Pennsylvania+Station/@40.7519848,-74.0015045,14.7z/data=!4m5!3m4!1s0x89c259ae15b2adcb:0x7955420634fd7eba!8m2!3d40.750568!4d-73.993519"
   actual <- url_build(list(
     scheme = "https",
+    user = "",
+    password = "",
     host = "www.google.com",
     port = "",
     path = "/maps/place/Pennsylvania+Station/@40.7519848,-74.0015045,14.7z/data=!4m5!3m4!1s0x89c259ae15b2adcb:0x7955420634fd7eba!8m2!3d40.750568!4d-73.993519",
@@ -32,7 +34,9 @@ test_that("test build with username and password", {
   expected <- "https://user_1:password_1@example.org:8080/dir/../api?q=1#frag"
   actual <- url_build(list(
     scheme = "https",
-    host = "user_1:password_1@example.org",
+    user = "user_1",
+    password = "password_1",
+    host = "example.org",
     port = "8080",
     path = "/dir/../api",
     raw_query = "q=1",
@@ -46,6 +50,8 @@ test_that("test build encoded path", {
   expected <- 'https://www.example.com:8080/search%3D1%2B3'
   actual <- url_build(list(
     scheme = "https",
+    user = "",
+    password = "",
     host = "www.example.com",
     port = "8080",
     path = "/search%3D1%2B3",

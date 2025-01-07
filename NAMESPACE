@@ -2,10 +2,12 @@
 
 export(set_fragment)
 export(set_host)
+export(set_password)
 export(set_path)
 export(set_port)
 export(set_query)
 export(set_scheme)
+export(set_user)
 export(url_build)
 export(url_decoder)
 export(url_encoder)

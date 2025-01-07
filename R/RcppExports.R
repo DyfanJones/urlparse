@@ -46,7 +46,7 @@ url_decoder <- function(urls) {
 #' @param url The URL string to parse.
 #'
 #' @return
-#' A list containing the components of the URL: scheme, host, path, raw_path, query, raw_query, and fragment.
+#' A list containing the components of the URL: scheme, user, password, host, path, raw_path, query, raw_query, and fragment.
 #'
 #' @examples
 #' library(urlparse)
@@ -73,7 +73,7 @@ url_parse <- function(url) {
 #'
 #' @examples
 #' library(urlparse)
-#' url_build(list(scheme = "https", host = "host.com", port = 8000, path = "/path", query = "query", fragment = "fragment"))
+#' url_build(list(scheme = "https", user = "", password = "", host = "host.com", port = 8000, path = "/path", query = "query", fragment = "fragment"))
 #'
 #' @export
 #' @useDynLib urlparse _urlparse_url_build
@@ -133,6 +133,22 @@ url_modify <- function(url, scheme = NULL, user = NULL, password = NULL, host = 
 #' @importFrom Rcpp evalCpp
 set_scheme <- function(url, scheme) {
     .Call('_urlparse_set_scheme', PACKAGE = 'urlparse', url, scheme)
+}
+
+#' @rdname url_modify
+#' @export
+#' @useDynLib urlparse _urlparse_set_host
+#' @importFrom Rcpp evalCpp
+set_user <- function(url, user) {
+    .Call('_urlparse_set_user', PACKAGE = 'urlparse', url, user)
+}
+
+#' @rdname url_modify
+#' @export
+#' @useDynLib urlparse _urlparse_set_host
+#' @importFrom Rcpp evalCpp
+set_password <- function(url, password) {
+    .Call('_urlparse_set_password', PACKAGE = 'urlparse', url, password)
 }
 
 #' @rdname url_modify

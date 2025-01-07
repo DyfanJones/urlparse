@@ -10,7 +10,7 @@ url_parse(url)
 \item{url}{The URL string to parse.}
 }
 \value{
-A list containing the components of the URL: scheme, host, path, raw_path, query, raw_query, and fragment.
+A list containing the components of the URL: scheme, user, password, host, path, raw_path, query, raw_query, and fragment.
 }
 \description{
 Parses a URL string into its components.

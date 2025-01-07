@@ -86,6 +86,30 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// set_user
+std::string set_user(const std::string& url, const std::string& user);
+RcppExport SEXP _urlparse_set_user(SEXP urlSEXP, SEXP userSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const std::string& >::type url(urlSEXP);
+    Rcpp::traits::input_parameter< const std::string& >::type user(userSEXP);
+    rcpp_result_gen = Rcpp::wrap(set_user(url, user));
+    return rcpp_result_gen;
+END_RCPP
+}
+// set_password
+std::string set_password(const std::string& url, const std::string& password);
+RcppExport SEXP _urlparse_set_password(SEXP urlSEXP, SEXP passwordSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const std::string& >::type url(urlSEXP);
+    Rcpp::traits::input_parameter< const std::string& >::type password(passwordSEXP);
+    rcpp_result_gen = Rcpp::wrap(set_password(url, password));
+    return rcpp_result_gen;
+END_RCPP
+}
 // set_host
 std::string set_host(const std::string& url, const std::string& host);
 RcppExport SEXP _urlparse_set_host(SEXP urlSEXP, SEXP hostSEXP) {
@@ -154,6 +178,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_urlparse_url_build", (DL_FUNC) &_urlparse_url_build, 1},
     {"_urlparse_url_modify", (DL_FUNC) &_urlparse_url_modify, 9},
     {"_urlparse_set_scheme", (DL_FUNC) &_urlparse_set_scheme, 2},
+    {"_urlparse_set_user", (DL_FUNC) &_urlparse_set_user, 2},
+    {"_urlparse_set_password", (DL_FUNC) &_urlparse_set_password, 2},
     {"_urlparse_set_host", (DL_FUNC) &_urlparse_set_host, 2},
     {"_urlparse_set_port", (DL_FUNC) &_urlparse_set_port, 2},
     {"_urlparse_set_path", (DL_FUNC) &_urlparse_set_path, 2},

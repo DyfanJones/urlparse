@@ -22,12 +22,6 @@ knitr::opts_chunk$set(
 <!-- badges: end -->
 
 Fast and simple url parser for R. Initially developed for the `paws.common` package.
-`urlparse` is influenced by python's `from urllib.parse import urlparse` and doesn't split out username or password from the host.
-
-```{python}
-from urllib.parse import urlparse
-urlparse("https://user:pass@host.com:8000/path?query=1#fragment")
-```
 
 ```{r}
 urlparse::url_parse("https://user:pass@host.com:8000/path?query=1#fragment")

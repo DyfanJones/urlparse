@@ -3,6 +3,8 @@ test_that("test basic url", {
   actual <- url_parse(url)
   expect_equal(actual, list(
     scheme = "https",
+    user = "",
+    password = "",
     host = "www.example.com",
     port = "",
     path = "",
@@ -19,6 +21,8 @@ test_that("test complex url", {
   actual <- url_parse(url)
   expect_equal(actual, list(
     scheme = "https",
+    user = "",
+    password = "",
     host = "www.google.com",
     port = "",
     path = "/maps/place/Pennsylvania+Station/@40.7519848,-74.0015045,14.7z/data=!4m5!3m4!1s0x89c259ae15b2adcb:0x7955420634fd7eba!8m2!3d40.750568!4d-73.993519",
@@ -34,7 +38,9 @@ test_that("test username and password", {
   actual <- url_parse(url)
   expect_equal(actual, list(
     scheme = "https",
-    host = "user_1:password_1@example.org",
+    user = "user_1",
+    password = "password_1",
+    host = "example.org",
     port = "8080",
     path = "/dir/../api",
     raw_path = "",
@@ -49,6 +55,8 @@ test_that("test encoded path", {
   actual <- url_parse(url)
   expect_equal(actual, list(
     scheme = "https",
+    user = "",
+    password = "",
     host = "www.example.com",
     port = "8080",
     path = "/search=1+3",
@@ -65,6 +73,8 @@ test_that("test utf-8", {
   actual <- url_parse(url)
   expect_equal(actual, list(
     scheme = "https",
+    user = "",
+    password = "",
     host = "www.google.co.jp",
     port = "",
     path = "/search",
@@ -80,12 +90,76 @@ test_that("test encoded query", {
   actual <- url_parse(url)
   expect_equal(actual, list(
     scheme = "https",
+    user = "",
+    password = "",
     host = "www.example.com",
     port = "8080",
     path = "",
     raw_path = "",
     query = list(var1 = "foo", var2 = "ba r", var3 = "baz+larry"),
     raw_query = "var1=foo&var2=ba%20r&var3=baz%2Blarry",
+    fragment = ""
+  ))
+})
+
+test_that("test user, password, host combinations", {
+  url <- 'https://user:password@example.com:8080'
+  actual <- url_parse(url)
+  expect_equal(actual, list(
+    scheme = "https",
+    user = "user",
+    password = "password",
+    host = "example.com",
+    port = "8080",
+    path = "",
+    raw_path = "",
+    query = list(),
+    raw_query = "",
+    fragment = ""
+  ))
+
+  url <- 'https://user:password@example.com'
+  actual <- url_parse(url)
+  expect_equal(actual, list(
+    scheme = "https",
+    user = "user",
+    password = "password",
+    host = "example.com",
+    port = "",
+    path = "",
+    raw_path = "",
+    query = list(),
+    raw_query = "",
+    fragment = ""
+  ))
+
+  url <- 'https://user@example.com:8080'
+  actual <- url_parse(url)
+  expect_equal(actual, list(
+    scheme = "https",
+    user = "user",
+    password = "",
+    host = "example.com",
+    port = "8080",
+    path = "",
+    raw_path = "",
+    query = list(),
+    raw_query = "",
+    fragment = ""
+  ))
+
+  url <- 'https://user@example.com'
+  actual <- url_parse(url)
+  expect_equal(actual, list(
+    scheme = "https",
+    user = "user",
+    password = "",
+    host = "example.com",
+    port = "",
+    path = "",
+    raw_path = "",
+    query = list(),
+    raw_query = "",
     fragment = ""
   ))
 })

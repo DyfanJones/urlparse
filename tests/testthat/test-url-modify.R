@@ -44,10 +44,12 @@ test_that("test query unexpected type", {
 })
 
 test_that("test modifing pipe", {
-  url <- 'https:/example.com'
-  expected <- "https://example_v2.com:8080/search?var1=bob&var2=1%2B2#frag"
+  url <- 'https://example.com'
+  expected <- "https://user:pass@example_v2.com:8080/search?var1=bob&var2=1%2B2#frag"
 
   actual <- set_scheme(url, "https") |>
+    set_user("user") |>
+    set_password("pass") |>
     set_host("example_v2.com") |>
     set_path("search") |>
     set_query(list(var1 = "bob", var2 = "1+2")) |>

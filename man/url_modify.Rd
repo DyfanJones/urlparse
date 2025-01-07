@@ -3,6 +3,8 @@
 \name{url_modify}
 \alias{url_modify}
 \alias{set_scheme}
+\alias{set_user}
+\alias{set_password}
 \alias{set_host}
 \alias{set_port}
 \alias{set_path}
@@ -23,6 +25,10 @@ url_modify(
 )
 
 set_scheme(url, scheme)
+
+set_user(url, user)
+
+set_password(url, password)
 
 set_host(url, host)
 

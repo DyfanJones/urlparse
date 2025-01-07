@@ -139,7 +139,7 @@ public:
     {
       url << scheme << "://";
     }
-    if (!user.empty())
+    if (!user.empty() || !password.empty())
     {
       url << user;
       if (!password.empty())
@@ -202,16 +202,62 @@ public:
     std::string host_port = std::string(it, host_end);
 
     // Use rfind to locate the last occurrence of ':' in host_port
+    // Use find to locate the last occurrence of '@' in host
     auto colon_pos = host_port.rfind(':');
+    auto at_pos = host_port.find('@');
+
     if (colon_pos != std::string::npos)
     {
-      result.host = host_port.substr(0, colon_pos);
-      result.port = host_port.substr(colon_pos + 1);
+      if (at_pos != std::string::npos)
+      {
+        if (colon_pos > at_pos)
+        {
+          // contains: <user>:<password>@<host>:<port>
+          result.host = host_port.substr(0, colon_pos);
+          result.port = host_port.substr(colon_pos + 1);
+
+          // split user, password and host
+          auto user_col_pos = result.host.find(':');
+          if (user_col_pos != std::string::npos)
+          {
+            result.user = result.host.substr(0, user_col_pos);
+            result.password = result.host.substr(user_col_pos + 1, at_pos - user_col_pos - 1);
+            result.host = result.host.substr(at_pos + 1);
+          }
+          else
+          {
+            // assume user when ":" can't be found
+            result.user = result.host.substr(0, at_pos);
+            result.host = result.host.substr(at_pos + 1);
+          }
+        }
+        else
+        {
+          // contains: <user>:<pass>@<host>
+          result.user = host_port.substr(0, colon_pos);
+          result.password = host_port.substr(colon_pos + 1, at_pos - colon_pos - 1);
+          result.host = host_port.substr(at_pos + 1);
+        }
+      }
+      else
+      {
+        // contains: <host>:<port>
+        result.host = host_port.substr(0, colon_pos);
+        result.port = host_port.substr(colon_pos + 1);
+      }
+    }
+    else if (at_pos != std::string::npos)
+    {
+      // contains: <user>@<host>
+      result.user = host_port.substr(0, at_pos);
+      result.host = host_port.substr(at_pos + 1);
     }
     else
     {
+      // contains: <host>
       result.host = host_port;
     }
+
     it = host_end;
 
     // Parse path
@@ -246,7 +292,7 @@ public:
 //' @param url The URL string to parse.
 //'
 //' @return
-//' A list containing the components of the URL: scheme, host, path, raw_path, query, raw_query, and fragment.
+//' A list containing the components of the URL: scheme, user, password, host, path, raw_path, query, raw_query, and fragment.
 //'
 //' @examples
 //' library(urlparse)
@@ -273,6 +319,8 @@ Rcpp::List url_parse(const std::string &url)
 
   Rcpp::List result = Rcpp::List::create(
       Rcpp::Named("scheme") = parsed_url.scheme,
+      Rcpp::Named("user") = parsed_url.user,
+      Rcpp::Named("password") = parsed_url.password,
       Rcpp::Named("host") = parsed_url.host,
       Rcpp::Named("port") = parsed_url.port,
       Rcpp::Named("path") = path,
@@ -298,7 +346,7 @@ Rcpp::List url_parse(const std::string &url)
 //'
 //' @examples
 //' library(urlparse)
-//' url_build(list(scheme = "https", host = "host.com", port = 8000, path = "/path", query = "query", fragment = "fragment"))
+//' url_build(list(scheme = "https", user = "", password = "", host = "host.com", port = 8000, path = "/path", query = "query", fragment = "fragment"))
 //'
 //' @export
 //' @useDynLib urlparse _urlparse_url_build
@@ -310,6 +358,14 @@ std::string url_build(const Rcpp::List &url_components)
   if (url_components.containsElementNamed("scheme"))
   {
     url.scheme = Rcpp::as<std::string>(url_components["scheme"]);
+  }
+  if (url_components.containsElementNamed("user"))
+  {
+    url.user = Rcpp::as<std::string>(url_components["user"]);
+  }
+  if (url_components.containsElementNamed("password"))
+  {
+    url.password = Rcpp::as<std::string>(url_components["password"]);
   }
   if (url_components.containsElementNamed("host"))
   {
@@ -499,6 +555,30 @@ std::string set_scheme(const std::string &url, const std::string &scheme)
 {
   URL parsed_url = URLParser::parse(url);
   parsed_url.scheme = scheme;
+  return parsed_url.toString();
+}
+
+//' @rdname url_modify
+//' @export
+//' @useDynLib urlparse _urlparse_set_host
+//' @importFrom Rcpp evalCpp
+// [[Rcpp::export]]
+std::string set_user(const std::string &url, const std::string &user)
+{
+  URL parsed_url = URLParser::parse(url);
+  parsed_url.user = user;
+  return parsed_url.toString();
+}
+
+//' @rdname url_modify
+//' @export
+//' @useDynLib urlparse _urlparse_set_host
+//' @importFrom Rcpp evalCpp
+// [[Rcpp::export]]
+std::string set_password(const std::string &url, const std::string &password)
+{
+  URL parsed_url = URLParser::parse(url);
+  parsed_url.password = password;
   return parsed_url.toString();
 }
 
