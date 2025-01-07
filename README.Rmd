@@ -84,7 +84,7 @@ url_modify(url, scheme = "https", port = 1234, path = "foo/bar", query = "baz", 
 ```
 
 
-Note: it is faster to use `url_modify` rather than then piping the `set_*` functions.  This is because `urlparse` has to parse the url within each `set_*` to modify the url.
+Note: it is faster to use `url_modify` rather than piping the `set_*` functions.  This is because `urlparse` has to parse the url within each `set_*` to modify the url.
 
 ```{r url_mod_bench}
 url <- "http://example.com"
