@@ -50,9 +50,6 @@ urlparse::url_parse("https://user:pass@host.com:8000/path?query=1#fragment")
 #> [1] "fragment"
 ```
 
-This allows `urlparse` to handle fairly complex url’s without
-sacrificing any performance.
-
 ## Installation
 
 You can install the development version of urlparse like so:
