@@ -73,7 +73,16 @@ url_parse <- function(url) {
 #'
 #' @examples
 #' library(urlparse)
-#' url_build(list(scheme = "https", user = "", password = "", host = "host.com", port = 8000, path = "/path", query = "query", fragment = "fragment"))
+#' url_build(list(
+#'   scheme = "https",
+#'   user = "",
+#'   password = "",
+#'   host = "host.com",
+#'   port = 8000,
+#'   path = "/path",
+#'   query = "query",
+#'   fragment = "fragment"
+#' ))
 #'
 #' @export
 #' @useDynLib urlparse _urlparse_url_build

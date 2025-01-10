@@ -25,6 +25,15 @@ Builds a URL string from its components.
 }
 \examples{
 library(urlparse)
-url_build(list(scheme = "https", user = "", password = "", host = "host.com", port = 8000, path = "/path", query = "query", fragment = "fragment"))
+url_build(list(
+  scheme = "https",
+  user = "",
+  password = "",
+  host = "host.com",
+  port = 8000,
+  path = "/path",
+  query = "query",
+  fragment = "fragment"
+))
 
 }
