@@ -4,8 +4,8 @@ Title: Fast Simple URL Parser
 Version: 0.1.0
 Authors@R: 
     person("Dyfan", "Jones", , "dyfan.r.jones@gmail.com", role = c("aut", "cre"))
-Description: A fast and simple URL parser package for R. This package provides
-    functions to parse URLs into their components, such as scheme, user, password, host, port,
+Description: A fast and simple 'URL' parser package for 'R'. This package provides
+    functions to parse 'URLs' into their components, such as scheme, user, password, host, port,
     path, query, and fragment.
 License: MIT + file LICENSE
 URL: https://github.com/dyfanjones/urlparse,
