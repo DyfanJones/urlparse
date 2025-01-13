@@ -59,6 +59,37 @@ url_parse <- function(url) {
     .Call('_urlparse_url_parse', PACKAGE = 'urlparse', url)
 }
 
+#' @title Parses a vector URLs into a dataframe.
+#' @description Parses a vector of URLs into their respective components.
+#'              It returns a data.frame where each row represents a URL,
+#'              and each column represents a specific component of the URL
+#'              such as the scheme, user, password, host, port, path, raw path,
+#'              raw query, and fragment.
+#' @param url A vector of strings, where each string is a URL to be parsed.
+#' @return A data frame with the following columns:
+#'         - href: The original URL.
+#'         - scheme: The scheme component of the URL (e.g., "http", "https").
+#'         - user: The user component of the URL.
+#'         - password: The password component of the URL.
+#'         - host: The host component of the URL.
+#'         - port: The port component of the URL.
+#'         - path: The decoded path component of the URL.
+#'         - raw_path: The raw path component of the URL.
+#'         - raw_query: The raw query component of the URL.
+#'         - fragment: The fragment component of the URL.
+#' @examples
+#' library(urlparse)
+#' urls <- c("https://user:password@www.example.com:8080/path/to/resource?query=example#fragment",
+#'           "http://www.test.com")
+#' url_parse_v2(urls)
+#'
+#' @export
+#' @useDynLib urlparse _urlparse_url_parse_v2
+#' @importFrom Rcpp evalCpp
+url_parse_v2 <- function(url) {
+    .Call('_urlparse_url_parse_v2', PACKAGE = 'urlparse', url)
+}
+
 #' @title Builds a URL string from its components.
 #'
 #' @param url_components A list containing the components of the URL: scheme, host, port, path, query, and fragment.

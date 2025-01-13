@@ -44,6 +44,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// url_parse_v2
+Rcpp::List url_parse_v2(std::vector<std::string> url);
+RcppExport SEXP _urlparse_url_parse_v2(SEXP urlSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<std::string> >::type url(urlSEXP);
+    rcpp_result_gen = Rcpp::wrap(url_parse_v2(url));
+    return rcpp_result_gen;
+END_RCPP
+}
 // url_build
 std::string url_build(const Rcpp::List& url_components);
 RcppExport SEXP _urlparse_url_build(SEXP url_componentsSEXP) {
@@ -175,6 +186,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_urlparse_url_encoder", (DL_FUNC) &_urlparse_url_encoder, 2},
     {"_urlparse_url_decoder", (DL_FUNC) &_urlparse_url_decoder, 1},
     {"_urlparse_url_parse", (DL_FUNC) &_urlparse_url_parse, 1},
+    {"_urlparse_url_parse_v2", (DL_FUNC) &_urlparse_url_parse_v2, 1},
     {"_urlparse_url_build", (DL_FUNC) &_urlparse_url_build, 1},
     {"_urlparse_url_modify", (DL_FUNC) &_urlparse_url_modify, 9},
     {"_urlparse_set_scheme", (DL_FUNC) &_urlparse_set_scheme, 2},

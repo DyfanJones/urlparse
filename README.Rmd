@@ -67,6 +67,8 @@ quote("foo = bar + 5", safe = "+")
 url_encoder("foo = bar + 5", safe = "+")
 ```
 
+Modify an `url` through piping using the `set_*` functions or using the stand alone `url_modify` function.
+
 ```{r url_modify}
 
 url <- "http://example.com"
@@ -94,7 +96,6 @@ bench::mark(
 )
 ```
 
-
 ## Benchmark:
 
 ```{r, echo = FALSE}
@@ -119,6 +120,41 @@ url <- "https://user:pass@host.com:8000/path?query=1#fragment"
 show_relative(bm)
 
 ggplot2::autoplot(bm)
+```
+
+Since `urlpase v0.1.999+` you can use the vectorised url parser `url_parser_v2`
+```{r benchmark_vectorise}
+urls <- c(
+  "https://www.example.com",
+  "https://www.google.com/maps/place/Pennsylvania+Station/@40.7519848,-74.0015045,14.7z/data=!4m5!3m4!1s0x89c259ae15b2adcb:0x7955420634fd7eba!8m2!3d40.750568!4d-73.993519",
+  "https://user_1:password_1@example.org:8080/dir/../api?q=1#frag",
+  "https://user:password@example.com",
+  "https://www.example.com:8080/search%3D1%2B3",
+  "https://www.google.co.jp/search?q=\u30c9\u30a4\u30c4",
+  "https://www.example.com:8080?var1=foo&var2=ba%20r&var3=baz+larry",
+  "https://user:password@example.com:8080",
+  "https://user:password@example.com",
+  "https://user@example.com:8080",
+  "https://user@example.com"
+)
+(bm <- bench::mark(
+  urlparse = lapply(urls, urlparse::url_parse),
+  urlparse_v2 = urlparse::url_parse_v2(urls),
+  httr2 =  lapply(urls, httr2::url_parse),
+  curl = lapply(urls, curl::curl_parse_url),
+  urltools = urltools::url_parse(urls),
+  check = F
+))
+
+show_relative(bm)
+
+ggplot2::autoplot(bm)
+```
+
+Note: `url_parse_v2` returns the parsed url as a `data.frame` this is similar behaviour to `urltools` and `adaR`:
+
+```{r url_parse_v2}
+urlparse::url_parse_v2(urls)
 ```
 
 ### Encoding URL:

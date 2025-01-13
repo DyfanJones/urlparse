@@ -332,6 +332,92 @@ Rcpp::List url_parse(const std::string &url)
   return result;
 }
 
+//' @title Parses a vector URLs into a dataframe.
+//' @description Parses a vector of URLs into their respective components.
+//'              It returns a data.frame where each row represents a URL,
+//'              and each column represents a specific component of the URL
+//'              such as the scheme, user, password, host, port, path, raw path,
+//'              raw query, and fragment.
+//' @param url A vector of strings, where each string is a URL to be parsed.
+//' @return A data frame with the following columns:
+//'         - href: The original URL.
+//'         - scheme: The scheme component of the URL (e.g., "http", "https").
+//'         - user: The user component of the URL.
+//'         - password: The password component of the URL.
+//'         - host: The host component of the URL.
+//'         - port: The port component of the URL.
+//'         - path: The decoded path component of the URL.
+//'         - raw_path: The raw path component of the URL.
+//'         - raw_query: The raw query component of the URL.
+//'         - fragment: The fragment component of the URL.
+//' @examples
+//' library(urlparse)
+//' urls <- c("https://user:password@www.example.com:8080/path/to/resource?query=example#fragment",
+//'           "http://www.test.com")
+//' url_parse_v2(urls)
+//'
+//' @export
+//' @useDynLib urlparse _urlparse_url_parse_v2
+//' @importFrom Rcpp evalCpp
+// [[Rcpp::export]]
+Rcpp::List url_parse_v2(std::vector<std::string> url)
+{
+  int n = url.size();
+
+  Rcpp::CharacterVector href(n);
+  Rcpp::CharacterVector scheme(n);
+  Rcpp::CharacterVector user(n);
+  Rcpp::CharacterVector password(n);
+  Rcpp::CharacterVector host(n);
+  Rcpp::CharacterVector port(n);
+  Rcpp::CharacterVector path(n);
+  Rcpp::CharacterVector raw_path(n);
+  Rcpp::CharacterVector raw_query(n);
+  Rcpp::CharacterVector fragment(n);
+  Rcpp::IntegerVector row_name(n);
+
+  for (int i = 0; i < n; ++i)
+  {
+    URL parsed_url = URLParser::parse(url[i]);
+    std::string raw_pathi = parsed_url.path;
+    std::string pathi = internal_url_unencode(raw_pathi);
+    std::string escaped_path = internal_url_encode(raw_pathi, "$&+,/;:=@");
+
+    if (escaped_path == raw_pathi)
+    {
+      raw_pathi = "";
+    }
+    href[i] = url[i];
+    scheme[i] = parsed_url.scheme;
+    user[i] = parsed_url.user;
+    password[i] = parsed_url.password;
+    host[i] = parsed_url.host;
+    port[i] = parsed_url.port;
+    path[i] = pathi;
+    raw_path[i] = raw_pathi;
+    raw_query[i] = build_query_string(parse_query_string(parsed_url.raw_query));
+    fragment[i] = parsed_url.fragment;
+    row_name[i] = i + 1; // R row names are 1-based
+  }
+  Rcpp::List result = Rcpp::List::create(
+      Rcpp::Named("href") = href,
+      Rcpp::Named("scheme") = scheme,
+      Rcpp::Named("user") = user,
+      Rcpp::Named("password") = password,
+      Rcpp::Named("host") = host,
+      Rcpp::Named("port") = port,
+      Rcpp::Named("path") = path,
+      Rcpp::Named("raw_path") = raw_path,
+      Rcpp::Named("raw_query") = raw_query,
+      Rcpp::Named("fragment") = fragment);
+
+  // as data.frame is expensive - create from the list
+  result.attr("row.names") = row_name;
+  result.attr("class") = "data.frame";
+
+  return result;
+}
+
 //' @title Builds a URL string from its components.
 //'
 //' @param url_components A list containing the components of the URL: scheme, host, port, path, query, and fragment.

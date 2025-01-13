@@ -163,3 +163,48 @@ test_that("test user, password, host combinations", {
     fragment = ""
   ))
 })
+
+
+test_that("check url_parse_v2 parse vectorised urls", {
+  urls <- c(
+    "https://www.example.com",
+    "https://www.google.com/maps/place/Pennsylvania+Station/@40.7519848,-74.0015045,14.7z/data=!4m5!3m4!1s0x89c259ae15b2adcb:0x7955420634fd7eba!8m2!3d40.750568!4d-73.993519",
+    "https://user_1:password_1@example.org:8080/dir/../api?q=1#frag",
+    "https://user:password@example.com",
+    "https://www.example.com:8080/search%3D1%2B3",
+    "https://www.google.co.jp/search?q=\u30c9\u30a4\u30c4",
+    "https://www.example.com:8080?var1=foo&var2=ba r&var3=baz+larry",
+    "https://user:password@example.com:8080",
+    "https://user:password@example.com",
+    "https://user@example.com:8080",
+    "https://user@example.com"
+  )
+  expected <- data.frame(
+    href = urls,
+    scheme = rep("https", 11),
+    user = c(
+      "", "", "user_1", "user", "", "", "", "user", "user", "user", "user"
+    ),
+    password = c(
+      "", "", "password_1", "password", "", "", "", "password", "password", "", ""
+    ),
+    host = c(
+      "www.example.com", "www.google.com", "example.org", "example.com",
+      "www.example.com", "www.google.co.jp", "www.example.com",
+      "example.com", "example.com", "example.com", "example.com"),
+    port = c("", "", "8080", "", "8080", "", "8080", "8080", "", "8080", ""),
+    path = c(
+      "", "/maps/place/Pennsylvania+Station/@40.7519848,-74.0015045,14.7z/data=!4m5!3m4!1s0x89c259ae15b2adcb:0x7955420634fd7eba!8m2!3d40.750568!4d-73.993519",
+      "/dir/../api", "", "/search=1+3", "/search", "", "", "", "", ""),
+    raw_path = c(
+      "", "/maps/place/Pennsylvania+Station/@40.7519848,-74.0015045,14.7z/data=!4m5!3m4!1s0x89c259ae15b2adcb:0x7955420634fd7eba!8m2!3d40.750568!4d-73.993519",
+      "", "", "/search%3D1%2B3", "", "", "", "", "", ""),
+    raw_query = c(
+      "", "", "q=1", "", "", "q=%E3%83%89%E3%82%A4%E3%83%84", "var1=foo&var2=ba%20r&var3=baz%2Blarry", "", "", "", ""),
+    fragment = c(
+      "", "", "frag", "", "", "", "", "", "", "", ""
+    )
+  )
+  actual <- url_parse_v2(urls)
+  expect_equal(actual, expected)
+})
