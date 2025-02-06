@@ -1,4 +1,4 @@
-# urlparse 0.1.9999
+# urlparse 0.2.0
 
 * new function `url_parse_v2` to vectorise parsing urls.
 
