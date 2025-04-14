@@ -131,8 +131,8 @@ bench::mark(
 #> # A tibble: 2 × 6
 #>   expression           min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr>      <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 piping            5.37µs    5.9µs   167991.        0B        0
-#> 2 single_function   1.64µs    1.8µs   519161.        0B        0
+#> 1 piping            5.29µs    5.9µs   162854.        0B     16.3
+#> 2 single_function    1.6µs    1.8µs   517151.        0B     51.7
 ```
 
 ## Benchmark:
@@ -151,22 +151,21 @@ url <- "https://user:pass@host.com:8000/path?query=1#fragment"
 #> # A tibble: 4 × 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 urlparse     1.72µs   1.89µs   494724.        0B      0  
-#> 2 httr2       64.98µs  68.59µs    14019.   560.9KB     17.5
-#> 3 curl        27.27µs  28.54µs    34199.   48.78KB     13.7
-#> 4 urltools   124.52µs 130.13µs     7460.    2.17MB     20.9
+#> 1 urlparse     1.72µs   1.93µs   488712.        0B      0  
+#> 2 httr2       22.39µs  23.86µs    40406.  571.07KB     24.3
+#> 3 curl        27.06µs  29.64µs    29324.        0B     14.7
+#> 4 urltools   124.44µs 132.68µs     7119.    2.18MB     23.2
 
 show_relative(bm)
 #> # A tibble: 4 × 6
 #>   expression   min median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-#> 1 urlparse     1      1       66.3        NaN      NaN
-#> 2 httr2       37.7   36.4      1.88       Inf      Inf
-#> 3 curl        15.8   15.1      4.58       Inf      Inf
-#> 4 urltools    72.3   69.0      1          Inf      Inf
+#> 1 urlparse     1      1       68.6        NaN      NaN
+#> 2 httr2       13.0   12.4      5.68       Inf      Inf
+#> 3 curl        15.7   15.4      4.12       NaN      Inf
+#> 4 urltools    72.3   68.9      1          Inf      Inf
 
 ggplot2::autoplot(bm)
-#> Loading required namespace: tidyr
 ```
 
 <img src="man/figures/README-benchmark-1.png" width="100%" />
@@ -199,21 +198,21 @@ urls <- c(
 #> # A tibble: 5 × 6
 #>   expression       min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr>  <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 urlparse      19.9µs   21.4µs    44755.      200B    17.9 
-#> 2 urlparse_v2   10.5µs   11.2µs    87440.     4.3KB     8.74
-#> 3 httr2        452.8µs  473.1µs     2060.    23.6KB    21.3 
-#> 4 curl         190.5µs  201.4µs     4881.        0B     9.64
-#> 5 urltools     130.3µs  136.7µs     7196.        0B    12.3
+#> 1 urlparse      19.4µs   21.3µs    46214.      200B    13.9 
+#> 2 urlparse_v2   10.5µs     11µs    87963.     4.3KB     0   
+#> 3 httr2        171.6µs  181.6µs     5232.        0B    10.2 
+#> 4 curl         188.7µs  198.4µs     4895.        0B     8.14
+#> 5 urltools       130µs  142.1µs     6569.        0B    10.2
 
 show_relative(bm)
 #> # A tibble: 5 × 6
 #>   expression    min median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr>  <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-#> 1 urlparse     1.89   1.92     21.7        Inf     2.05
-#> 2 urlparse_v2  1      1        42.4        Inf     1   
-#> 3 httr2       43.0   42.3       1          Inf     2.44
-#> 4 curl        18.1   18.0       2.37       NaN     1.10
-#> 5 urltools    12.4   12.2       3.49       NaN     1.41
+#> 1 urlparse     1.85   1.94      9.44       Inf      Inf
+#> 2 urlparse_v2  1      1        18.0        Inf      NaN
+#> 3 httr2       16.4   16.5       1.07       NaN      Inf
+#> 4 curl        18.0   18.1       1          NaN      Inf
+#> 5 urltools    12.4   12.9       1.34       NaN      Inf
 
 ggplot2::autoplot(bm)
 ```
@@ -304,19 +303,19 @@ string <- "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~`!@
 #> # A tibble: 4 × 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 urlparse     1.52µs   1.64µs   598950.      208B     0   
-#> 2 curl          2.3µs   2.42µs   407439.    3.06KB     0   
-#> 3 urltools     2.38µs   2.62µs   376010.    2.48KB     0   
-#> 4 base        78.76µs  81.88µs    12031.   28.59KB     8.19
+#> 1 urlparse     1.48µs   1.64µs   581380.      208B     0   
+#> 2 curl         2.25µs   2.58µs   349595.    3.03KB     0   
+#> 3 urltools     2.34µs   2.54µs   381930.    2.48KB     0   
+#> 4 base        78.84µs  82.33µs    11746.   28.59KB     8.25
 
 show_relative(bm)
 #> # A tibble: 4 × 6
 #>   expression   min median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-#> 1 urlparse    1      1         49.8       1        NaN
-#> 2 curl        1.51   1.47      33.9      15.0      NaN
-#> 3 urltools    1.57   1.60      31.3      12.2      NaN
-#> 4 base       51.9   49.9        1       141.       Inf
+#> 1 urlparse    1      1         49.5       1        NaN
+#> 2 curl        1.53   1.57      29.8      14.9      NaN
+#> 3 urltools    1.58   1.55      32.5      12.2      NaN
+#> 4 base       53.4   50.2        1       141.       Inf
 
 ggplot2::autoplot(bm)
 ```
@@ -337,19 +336,19 @@ url <- paste0(sample(strsplit(string, "")[[1]], 1e4, replace = TRUE), collapse =
 #> # A tibble: 4 × 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 urlparse    85.36µs  86.55µs    11420.    15.7KB     0   
-#> 2 curl        92.05µs  93.69µs    10521.        0B     0   
-#> 3 urltools   244.03µs 245.55µs     4047.    15.7KB     0   
-#> 4 base         6.57ms   6.73ms      142.   332.2KB     9.84
+#> 1 urlparse     86.4µs   88.3µs    10599.    15.8KB     0   
+#> 2 curl         91.6µs   94.9µs    10306.        0B     0   
+#> 3 urltools    241.8µs  247.8µs     3943.    15.8KB     0   
+#> 4 base          6.7ms      7ms      138.   333.5KB     8.00
 
 show_relative(bm)
 #> # A tibble: 4 × 6
 #>   expression   min median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-#> 1 urlparse    1      1         80.6       Inf      NaN
-#> 2 curl        1.08   1.08      74.2       NaN      NaN
-#> 3 urltools    2.86   2.84      28.6       Inf      NaN
-#> 4 base       77.0   77.8        1         Inf      Inf
+#> 1 urlparse    1      1         76.8       Inf      NaN
+#> 2 curl        1.06   1.08      74.7       NaN      NaN
+#> 3 urltools    2.80   2.81      28.6       Inf      NaN
+#> 4 base       77.6   79.3        1         Inf      Inf
 
 ggplot2::autoplot(bm)
 ```
